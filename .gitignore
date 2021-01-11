@@ -1,0 +1,7 @@
+*.fasta
+*.yaml
+*.bam
+*.fa
+*.fna
+*.gz
+*.sam
