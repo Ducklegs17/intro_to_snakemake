@@ -4,6 +4,7 @@ localrules:
 	all,
 	get_data,
 	subset_data,
+	trim,
 
 rule all:
 	input:
