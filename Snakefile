@@ -7,7 +7,7 @@ localrules:
 
 rule all:
 	input:
-		"2_assembly/C2004_S15/contigs.fasta",
+		"3_ass_quality/C2004_S15/report.tsv",
 
 rule get_data:
 	output:
@@ -57,4 +57,16 @@ rule assemble:
 	shell:
 		"""
 		spades.py -1 {input.r1} -2 {input.r2} -o 2_assembly/C2004_S15
+		"""
+
+rule quast:
+	input:
+		"2_assembly/C2004_S15/contigs.fasta",
+	output:
+		"3_ass_quality/C2004_S15/report.tsv",
+	conda:
+		"envs/default.yaml",
+	shell:
+		"""
+		quast {input} -o 3_ass_quality/C2004_S15
 		"""
