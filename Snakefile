@@ -1,31 +1,75 @@
-#ASSEMBLIES = ["canu_hifi11_25x",
-#	"flye_clr_50x",
-#	"flye_hifi24_25x",
-#	"raven_clr_50x",
-#	"canu_hifi24_25x",
-#	"flye_hifi11_25x",
-#	"hifiasm_hifi24_25x",
-#	"wtdbg2_clr_50x"]
+#!/bin/bash/
 
-
-localrules: 
+localrules:
+	all,
+	get_data,
+	subset_data,
 
 rule all:
 	input:
-		"1_graphs/graph.txt",
+		"2_assembly/C2004_S15/contigs.fasta",
 
-rule quast_raw:
-	input:
-		"0_assemblies/canu_hifi11_25x.fa",
+rule get_data:
 	output:
-		"test/report.tsv",
-	threads:
-		6
-	singularity:
-		"docker://quay.io/biocontainers/quast:5.0.2--1"
+		"0_raw/C2004_S15_L001_R1_001.fastq.gz",
+		"0_raw/C2004_S15_L001_R2_001.fastq.gz", 
 	shell:
 		"""
-		quast {input} --threads {threads} -o test
+		wget -O 0_raw/C2004_S15_L001_R1_001.fastq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR13418674/C2004_S15_L001_R1_001.fastq.gz.1
+		wget -O 0_raw/C2004_S15_L001_R2_001.fastq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR13418674/C2004_S15_L001_R2_001.fastq.gz.1
 		"""
 
+rule subset_data:
+	input:
+		"0_raw/C2004_S15_L001_R{read}_001.fastq.gz",
+	output:
+		"1_subset/raw/C2004_S15_L001_R{read}_001.fastq.gz",
+	conda:
+		"envs/default.yaml",
+	shell:
+		"""
+		seqtk sample -s100 {input} 7000 > {output}
+		"""	
 
+rule fastqc:
+	input:
+		expand("1_subset/raw/C2004_S15_L001_R{read}_001.fastq.gz", read = [1,2]),
+	output:
+		"1_subset/raw/C2004_S15_L001_R{read}_001_fastqc.html",
+		"1_subset/raw/C2004_S15_L001_R{read}_001_fastqc.zip",
+	conda:
+		"envs/default.yaml",
+	shell:
+		"""
+		fastqc \
+		-o 1_subset/raw/ \
+		{input}
+		"""
+
+rule trim:
+	input:
+		r1 = "1_subset/raw/C2004_S15_L001_R1_001.fastq.gz",
+		r2 = "1_subset/raw/C2004_S15_L001_R2_001.fastq.gz",
+	output:
+		r1 = "1_subset/trimmed/C2004_S15_L001_R1_001.fastq.gz",
+		r2 = "1_subset/trimmed/C2004_S15_L001_R2_001.fastq.gz",
+		html = "1_subset/trimmed/C2004_S15_L001_fastp.html",
+	conda:
+		"envs/default.yaml",
+	shell:
+		"""
+		fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} -h {output.html}
+		"""
+
+rule assemble:
+	input:
+		r1 = "1_subset/trimmed/C2004_S15_L001_R1_001.fastq.gz",
+		r2 = "1_subset/trimmed/C2004_S15_L001_R2_001.fastq.gz",
+	output:
+		"2_assembly/C2004_S15/contigs.fasta",
+	conda:
+		"envs/default.yaml",
+	shell:
+		"""
+		spades.py -1 {input.r1} -2 {input.r2} -o 2_assembly/C2004_S15
+		"""

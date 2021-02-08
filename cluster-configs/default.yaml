@@ -27,3 +27,7 @@ __default__ :
 #        mem           : "{resources.mem_mb}"
 #        time          : "00-00:{resources.time}:00"
 
+bwa_map:
+        cpus-per-task : 2
+        mem           : "3000"
+        time          : "00-00:30:00"
