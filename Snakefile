@@ -31,21 +31,6 @@ rule subset_data:
 		seqtk sample -s100 {input} 7000 > {output}
 		"""	
 
-rule fastqc:
-	input:
-		expand("1_subset/raw/C2004_S15_L001_R{read}_001.fastq.gz", read = [1,2]),
-	output:
-		"1_subset/raw/C2004_S15_L001_R{read}_001_fastqc.html",
-		"1_subset/raw/C2004_S15_L001_R{read}_001_fastqc.zip",
-	conda:
-		"envs/default.yaml",
-	shell:
-		"""
-		fastqc \
-		-o 1_subset/raw/ \
-		{input}
-		"""
-
 rule trim:
 	input:
 		r1 = "1_subset/raw/C2004_S15_L001_R1_001.fastq.gz",
