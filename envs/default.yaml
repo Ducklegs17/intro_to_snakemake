@@ -1,0 +1,14 @@
+#check anaconda cloud for new versions of stuff.
+channels:
+ - bioconda
+ - conda-forge
+ - defaults
+dependencies: 
+ - quast=5.0.2
+ - bwa-mem2=2.1
+ - samtools=1.11
+ - bcftools=1.11
+ - seqtk=1.3
+ - fastqc=0.11.9
+ - fastp=0.20.1
+ - spades=3.15.0
