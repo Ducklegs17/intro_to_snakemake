@@ -1,5 +1,4 @@
 *.fasta
-*.yaml
 *.bam
 *.fa
 *.fna
