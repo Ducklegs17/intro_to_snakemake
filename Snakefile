@@ -86,7 +86,9 @@ rule assemble:
 		"envs/default.yaml",
 	params:
 		out = "2_assembly/{STRAIN}/",
+	threads:
+		1
 	shell:
 		"""
-		spades.py -1 {input.r1} -2 {input.r2} -o {params.out}
+		spades.py -1 {input.r1} -2 {input.r2} -o {params.out} --threads {threads}
 		"""
