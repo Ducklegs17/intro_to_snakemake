@@ -1,5 +1,20 @@
 README
 
+There are 4 branches in this repository. 
+
+### Main 
+The main branch includes a very simple workflow that processes a single sample and is entirely hardcoded.
+
+### add_quast
+This branch adds the QUAST rule to the end of the workflow.
+
+### generalise
+This branch generalises the workflow to process two samples. Note that the first rule, 'get_data' is not generalised and doesn't represent good practice. This is rectified in the 'other_features' branch.
+
+### other_features
+This branch has all rules generalised and also includes examples of a number of different snakemake features including logging, specifying threads, passing resource requirements to the cluster-configs/default.yaml file, and benchmarking.
+
+
 # Instructions for installing Anaconda3 and Snakemake on Phoenix 
 
 ```
@@ -61,41 +76,41 @@ cd into the repository and edit `cluster-configs/phoenix.yaml` so that the word 
 It is best to run Snakemake in a screen
 
 Create a new screen with a name of your choice
-`screen -S nameofyourchoice`
+```screen -S nameofyourchoice```
 
 Load anaconda3 from phoenix
 Note that the version below may not be the most recent. 
 Feel free to use `module spider anaconda` to find the most recent version.
-`module load Anaconda3/2020.07`
+```module load Anaconda3/2020.07```
 
 Activate the snakemake conda environment that you made earlier
-`conda activate snakemake`
+```conda activate snakemake```
 
 If you are running singularity/using docker images
-`module load Singularity`
+```module load Singularity```
 
 To perform a dryrun of your workflow (see which rules will be run)
-`snakemake --dryrun`
+```snakemake --dryrun```
 
 To generate a DAG showing visual file dependencies in a PDF
-`snakemake --dag | dot -Tpdf > outputdag.pdf`
+```snakemake --dag | dot -Tpdf > outputdag.pdf```
 
 To generate a rulegraph showing visual rule dependencies in a PDF
-`snakemake --rulegraph | dot -Tpdf > outputrulegraph.pdf`
+```snakemake --rulegraph | dot -Tpdf > outputrulegraph.pdf```
 
 To run the workflow using the targets specified in 'rule all'
-`snakemake --profile profiles/slurm --use-conda` 
+```snakemake --profile profiles/slurm --use-conda```
 
 If some rules contain docker images, use
-`snakemake --profile profiles/slurm --use-conda --use-singularity`
+```snakemake --profile profiles/slurm --use-conda --use-singularity```
 
 To request a specific target file
-`snakemake --profile profiles/slurm --use-conda requested/file/name.txt`
+```snakemake --profile profiles/slurm --use-conda requested/file/name.txt```
 
 To detatch from your screen press 'Ctrl+a' and then press 'd'. This doesn't delete the screen.
 It will keep running on Phoenix but will be disconnected from your local computer.
 
 To reattach the screen
-`screen -r nameofyourchoice`
+```screen -r nameofyourchoice```
 
  
