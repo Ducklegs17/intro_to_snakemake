@@ -113,4 +113,8 @@ It will keep running on Phoenix but will be disconnected from your local compute
 To reattach the screen
 ```screen -r nameofyourchoice```
 
+To checkout a different branch
+```git checkout branchname```
+
+
  
